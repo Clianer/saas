@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!-- 读取七牛配置文件 -->
+    <context:property-placeholder location="classpath*:properties/qiniu.properties"/>
+    <!-- 扫描注解 -->
+    <context:component-scan base-package="cn.itcast.web"/>
+    <!-- 配置三大组件 -->
+    <!-- 注解驱动 -->
+    <mvc:annotation-driven conversion-service="conversionServiceFactoryBean"/>
+    <!-- 视图解析器 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    <!-- 静态资源放行 -->
+    <mvc:default-servlet-handler/>
+    <!-- 类型转换器 -->
+    <bean id="conversionServiceFactoryBean" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <ref bean="stringToDateConverter"/>
+            </set>
+        </property>
+    </bean>
+    <!-- 开启切面代理 -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <!-- 文件上传解析器 -->
+    <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver">
+        <property name="maxUploadSize" value="10485760"/>
+    </bean>
+
+    <!-- dubbo配置 -->
+    <dubbo:application name="export_web_manager"/>
+    <dubbo:registry address="zookeeper://192.168.37.99:2181"/>
+    <dubbo:annotation package="cn.itcast.web.controller"/>
+    <dubbo:consumer check="false"/>
+</beans>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!-- 应用名称：随便写（保证唯一:和项目名一致）  -->
+    <dubbo:application name="export_company_service">
+        <!--qos 监控 （可选，有多个服务时候启动报错，端口冲突22222. 这里配置可以解决） -->
+        <!--<dubbo:parameter key="qos.enable" value="false"></dubbo:parameter>-->
+    </dubbo:application>
+
+    <!--配置注册中心  注册中心的地址-->
+    <dubbo:registry address="zookeeper://192.168.37.99:2181"></dubbo:registry>
+
+    <!--
+        配置请求协议  此dubbo服务的请求端口（和tomcat端无关：不能一致）
+            port（端口）：服务提供者的真实请求端口
+     -->
+    <dubbo:protocol name="dubbo" port="20880"></dubbo:protocol>
+
+    <!--配置dubbo服务提供者的包扫描-->
+    <dubbo:annotation package="cn.itcast.service"></dubbo:annotation>
+</beans>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+
+    <!-- 配置小兔子连接 -->
+    <!-- 获得工厂 -->
+    <rabbit:admin connection-factory="connectionFactory"/>
+    <rabbit:connection-factory
+            id="connectionFactory"
+            host="192.168.37.99"
+            port="5672"
+            virtual-host="/itcast"
+            username="heima"
+            password="123"/>
+    <!-- 创建队列名 -->
+    <rabbit:queue name="myQueue"/>
+    <!-- 绑定交换机 -->
+    <rabbit:topic-exchange name="myExchange">
+        <rabbit:bindings>
+            <rabbit:binding pattern="msg.#" queue="myQueue"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+    <!-- 配置RabbitTemplate -->
+    <rabbit:template id="rabbitTemplate" connection-factory="connectionFactory"
+                     exchange="myExchange"
+                     message-converter="jsonMessageConverter"/>
+    <bean class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter" id="jsonMessageConverter"/>
+</beans>

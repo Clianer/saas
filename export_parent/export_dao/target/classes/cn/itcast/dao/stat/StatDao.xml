@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.itcast.dao.stat.StatDao">
+
+    <select id="getFactoryData" resultType="map">
+        SELECT p.factory_name 'name' , SUM(amount) 'value' FROM (
+        SELECT factory_name , SUM(amount) amount
+        FROM co_contract_product
+        WHERE factory_name IS NOT NULL GROUP BY factory_name
+
+        UNION ALL
+
+        SELECT factory_name , SUM(amount) amonut
+        FROM co_ext_cproduct
+        WHERE factory_name IS NOT NULL GROUP BY factory_name) p
+        GROUP BY p.factory_name
+    </select>
+</mapper>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.itcast.dao.company.CompanyDao">
+
+    <!--映射别名-->
+    <resultMap id="BaseReslutMap" type="cn.itcast.domain.company.Company">
+        <id column="id" property="id"/>
+        <result column="name" property="name"></result>
+        <result column="expiration_date" property="expirationDate"></result>
+        <result column="address" property="address"></result>
+        <result column="license_id" property="licenseId"></result>
+        <result column="representative" property="representative"></result>
+        <result column="phone" property="phone"></result>
+        <result column="company_size" property="companySize"></result>
+        <result column="industry" property="industry"></result>
+        <result column="remarks" property="remarks"></result>
+        <result column="state" property="state"></result>
+        <result column="balance" property="balance"></result>
+        <result column="city" property="city"></result>
+    </resultMap>
+    <!-- 删除一家企业记录 -->
+    <delete id="del">
+        delete from ss_company where id = #{id}
+    </delete>
+
+    <!--查询所有企业-->
+    <select id="findAll" resultMap="BaseReslutMap">
+        select * from ss_company
+    </select>
+    <select id="findById" resultMap="BaseReslutMap">
+        select * from ss_company where id = #{id}
+    </select>
+    <!-- 插入一家企业 -->
+    <insert id="add">
+        INSERT INTO ss_company (
+              `id`,
+              `name`,
+              `expiration_date`,
+              `address`,
+              `license_id`,
+              `representative`,
+              `phone`,
+              `company_size`,
+              `industry`,
+              `remarks`,
+              `state`,
+              `balance`,
+              `city`
+        )
+        VALUES
+        (
+              #{id},
+              #{name},
+              #{expirationDate},
+              #{address},
+              #{licenseId},
+              #{representative},
+              #{phone},
+              #{companySize},
+              #{industry},
+              #{remarks},
+              #{state},
+              #{balance},
+              #{city}
+        ) #{
+    </insert>
+    <!-- 更新一家企业信息 -->
+    <update id="upData">
+        UPDATE 
+          ss_company
+        SET
+          `name` =#{name},
+          `expiration_date` =#{expirationDate},
+          `address` =#{address},
+          `license_id` =#{licenseId},
+          `representative` =#{representative},
+          `phone` =#{phone},
+          `company_size` =#{companySize},
+          `industry` =#{industry},
+          `remarks` =#{remarks},
+          `state` =#{state},
+          `balance` =#{balance},
+          `city` =#{city}
+        WHERE `id` =#{id}
+    </update>
+</mapper>

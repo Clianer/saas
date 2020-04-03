@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itcast.dao.system.ModuleDao">
+    <resultMap id="BaseResultMap" type="cn.itcast.domain.system.Module">
+        <id column="module_id" property="id" />
+        <result column="parent_id" property="parentId" />
+        <result column="parent_name" property="parentName" />
+        <result column="name" property="name" />
+        <result column="layer_num" property="layerNum" />
+        <result column="is_leaf" property="isLeaf" />
+        <result column="ico" property="ico" />
+        <result column="cpermission" property="cpermission" />
+        <result column="curl" property="curl" />
+        <result column="ctype" property="ctype" />
+        <result column="state" property="state" />
+        <result column="belong" property="belong" />
+        <result column="cwhich" property="cwhich" />
+        <result column="quote_num" property="quoteNum" />
+        <result column="remark" property="remark" />
+        <result column="order_no"  property="orderNo" />
+    </resultMap>
+
+    <!--查询全部模块列表-->
+    <select id="findAll" resultMap="BaseResultMap">
+        select * from ss_module
+    </select>
+
+    <!--根据id查询-->
+    <select id="findById" resultMap="BaseResultMap">
+        select * from ss_module where module_id = #{id}
+    </select>
+    <!--查询角色所拥有的权限-->
+    <select id="findModuleByRoleId" resultMap="BaseResultMap">
+        select m.* from pe_role_module rm ,ss_module m where m.module_id = rm.module_id and rm.role_id = #{id}
+    </select>
+    <!-- 查询用户权限 -->
+    <select id="findModuleByUserId" resultMap="BaseResultMap">
+        select distinct m.* from ss_module m
+        inner join
+        pe_role_module rm on m.module_id = rm.module_id
+        inner join
+        pe_role_user ru on ru.role_id = rm.role_id
+        where 1=1
+        and
+        ru.user_id = #{userId}
+    </select>
+    <select id="findByBelong" resultMap="BaseResultMap">
+        select * from ss_module where belong = #{belong}
+    </select>
+
+    <!--删除-->
+    <delete id="delete">
+        delete from ss_module where module_id = #{id}
+    </delete>
+
+    <!--保存-->
+    <insert id="save">
+        insert into ss_module (module_id, parent_id, parent_name, name, layer_num, is_leaf,
+        ico, cpermission, curl, ctype, state, belong, cwhich, quote_num,
+        remark, order_no)
+        values (#{id}, #{parentId}, #{parentName}, #{name}, #{layerNum}, #{isLeaf},
+        #{ico}, #{cpermission}, #{curl}, #{ctype}, #{state}, #{belong}, #{cwhich}, #{quoteNum},
+        #{remark}, #{orderNo})
+    </insert>
+
+    <!--更新-->
+    <update id="update">
+        update ss_module
+        set parent_id = #{parentId},
+        parent_name = #{parentName},
+        name = #{name},
+        layer_num = #{layerNum},
+        is_leaf = #{isLeaf},
+        ico = #{ico},
+        cpermission = #{cpermission},
+        curl = #{curl},
+        ctype = #{ctype},
+        state = #{state},
+        belong = #{belong},
+        cwhich = #{cwhich},
+        quote_num = #{quoteNum},
+        remark = #{remark},
+        order_no = #{orderNo}
+        where module_id = #{id}
+    </update>
+</mapper>

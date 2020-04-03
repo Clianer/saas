@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.itcast.dao.system.UserDao">
+    <!--映射字段-->
+    <resultMap id="BaseResultMap" type="cn.itcast.domain.system.User">
+        <id column="user_id" property="userId"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="email" property="email"/>
+        <result column="user_name" property="userName"/>
+        <result column="password" property="password"/>
+        <result column="state" property="state"/>
+        <result column="company_id" property="companyId"/>
+        <result column="company_name" property="companyName"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="manager_id" property="managerId"/>
+        <result column="join_date" property="joinDate"/>
+        <result column="salary" property="salary"/>
+        <result column="birthday" property="birthday"/>
+        <result column="gender" property="gender"/>
+        <result column="station" property="station"/>
+        <result column="telephone" property="telephone"/>
+        <result column="degree" property="degree"/>
+        <result column="remark" property="remark"/>
+        <result column="order_no" property="orderNo"/>
+    </resultMap>
+    <!--查询所有用户-->
+    <select id="findAll" resultMap="BaseResultMap">
+        select * from pe_user
+    </select>
+
+    <!--根据ID查询一条记录-->
+    <select id="findById" resultMap="BaseResultMap">
+        select * from pe_user where user_id = #{userId}
+    </select>
+    <!-- 查询用户角色表里面是否存在数据 -->
+    <select id="findUserRoleByUserId" resultType="long">
+        SELECT COUNT(1) FROM pe_role_user WHERE user_id=#{userId}
+    </select>
+    <select id="login" resultMap="BaseResultMap">
+        select * from pe_user where email = #{email}
+    </select>
+
+    <!--插入一条信息-->
+    <insert id="add">
+        insert into
+        pe_user
+        (
+        user_id, dept_id, email, user_name, password, state, company_id,
+        company_name, dept_name, manager_id, join_date, salary, birthday,
+        gender, station, telephone, degree, remark, order_no
+        )
+        values
+        (
+        #{userId}, #{deptId}, #{email}, #{userName}, #{password}, #{state}, #{companyId},
+        #{companyName}, #{deptName}, #{managerId}, #{joinDate}, #{salary}, #{birthday},
+        #{gender}, #{station}, #{telephone}, #{degree}, #{remark}, #{orderNo}
+        )
+    </insert>
+
+    <!--更新一条信息-->
+    <update id="upData">
+        update pe_user
+        set
+        dept_id = #{deptId},
+        email = #{email},
+        user_name = #{userName},
+        password = #{password},
+        state = #{state},
+        company_id = #{companyId},
+        company_name = #{companyName},
+        dept_name = #{deptName},
+        manager_id = #{managerId},
+        join_date = #{joinDate},
+        salary = #{salary},
+        birthday = #{birthday},
+        gender = #{gender},
+        station = #{station},
+        telephone = #{telephone},
+        degree = #{degree},
+        remark = #{remark},
+        order_no = #{orderNo}
+        where
+        user_id = #{userId}
+    </update>
+    <!--保存用户角色-->
+    <insert id="updataUserRole">
+        insert into
+        pe_role_user (
+            user_id,
+            role_id
+        )values (
+            #{param1},
+            #{param2}
+        )
+    </insert>
+
+    <!--根据ID删除一条信息-->
+    <delete id="delete">
+        delete from pe_user where user_id = #{userId}
+    </delete>
+    <!--删除用户角色-->
+    <delete id="deleteUserRole">
+        delete from pe_role_user where user_id = #{userId}
+    </delete>
+</mapper>

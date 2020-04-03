@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.itcast.dao.system.DeptDao">
+    <resultMap id="BaseResultMap" type="cn.itcast.domain.system.Dept">
+        <result column="dept_id" property="id"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="state" property="state"/>
+        <result column="company_id" property="companyId"/>
+        <result column="company_name" property="companyName"/>
+        <!--
+            association 一对一，封装父部门
+                property 对象属性
+                javaType 对象类型
+                column   外键字段（如果有配置select语句，会自动把该列作为select语句对应方法的查询条件）
+                fetchType
+                    eager 及时加载
+                    lazy  延迟加载（当查询部门后，使用到部门对象关联的父部门时候，才执行findById查询。）
+        -->
+        <association
+                property="parent"
+                javaType="cn.itcast.domain.system.Dept"
+                column="parent_id"
+                select="cn.itcast.dao.system.DeptDao.findById"
+                fetchType="lazy"
+        />
+    </resultMap>
+
+    <!-- 插入一条部门信息 -->
+    <insert id="add">
+        INSERT INTO pe_dept (
+          `dept_id`,
+          `dept_name`,
+          `parent_id`,
+          `state`,
+          `company_id`,
+          `company_name`
+        )
+        VALUES
+        (
+           #{id},
+           #{deptName},
+           #{parent.id},
+           #{state},
+           #{companyId},
+           #{companyName}
+        ) ;
+    </insert>
+    <!-- 更新部门信息 -->
+    <update id="updata">
+        UPDATE 
+          pe_dept
+        SET
+          `dept_id` =#{id},
+          `dept_name` =#{deptName},
+          `parent_id` =
+          <choose>
+            <when test="parent != null and parent.id != '' and parent.id != null">
+                #{parent.id},
+            </when>
+            <otherwise>null,</otherwise>
+          </choose>
+          `state` =#{state},
+          `company_id` =#{companyId},
+          `company_name` =#{companyName}
+        WHERE `dept_id` = #{id} ;
+    </update>
+    <!-- 根据企业ID查询所有部门信息 -->
+    <select id="findAll" resultMap="BaseResultMap">
+        select * from pe_dept where company_id = #{id}
+    </select>
+
+    <!-- 根据ID查询一个部门的信息 -->
+    <select id="findById" resultMap="BaseResultMap">
+        select * from pe_dept where dept_id = #{id}
+    </select>
+    <!-- 查询所有部门信息（名称）但不包括自己 -->
+    <select id="findAllDept" resultMap="BaseResultMap">
+        select * from pe_dept where company_id = #{param1} and dept_id != #{param2}
+    </select>
+    <!-- 根据父部门ID查询是否存在子部门 -->
+    <select id="findParentById" resultMap="BaseResultMap">
+        select * from pe_dept where parent_id = #{id}
+    </select>
+    <!-- 根据ID进行删除 -->
+    <delete id="del">
+        delete from pe_dept where dept_id = #{id}
+    </delete>
+<!--    <delete id="delMany">
+        delete  from  pe_dept where dept_id in
+        <foreach item="ids" collection="array" open="(" separator="," close=")" index="no">
+          #{ids}
+        </foreach> 
+    </delete>-->
+</mapper>
